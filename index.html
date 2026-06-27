@@ -1,0 +1,1986 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="MT Belts"/>
+<meta name="theme-color" content="#e8a020"/>
+<meta name="description" content="Musaddique Traders — Belt Stock aur Billing Manager"/>
+<title>Musaddique Traders — Belt Stock Manager</title>
+<link rel="manifest" href="./manifest.json"/>
+<link rel="apple-touch-icon" href="./icon-192.png"/>
+<link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" onerror="console.log('html2canvas not loaded')"></script>
+<style>
+  :root {
+    --bg: #0f1117; --surface: #181c27; --card: #1e2333; --border: #2a3045;
+    --accent: #e8a020; --accent2: #c0760f; --green: #22c55e; --red: #ef4444;
+    --blue: #3b82f6; --text: #e8eaf0; --muted: #7a8099; --low: #ff6b35;
+    --toyo: #3b82f6; --op: #a855f7;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+  header { background: var(--surface); border-bottom: 2px solid var(--accent); padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 68px; position: sticky; top: 0; z-index: 100; }
+  .logo-area { display: flex; align-items: center; gap: 14px; }
+  .logo-icon { width: 44px; height: 44px; background: linear-gradient(135deg, var(--accent), var(--accent2)); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 18px; color: #000; letter-spacing: -1px; flex-shrink: 0; }
+  .logo-text h1 { font-family: 'Syne', sans-serif; font-size: 17px; font-weight: 800; color: var(--accent); }
+  .logo-text p { font-size: 11px; color: var(--muted); letter-spacing: 1.5px; text-transform: uppercase; }
+  .header-date { font-size: 12px; color: var(--muted); text-align: right; }
+  nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 24px; display: flex; gap: 4px; overflow-x: auto; }
+  nav button { background: none; border: none; padding: 14px 16px; font-size: 13px; font-weight: 500; color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; white-space: nowrap; font-family: 'Inter', sans-serif; }
+  nav button.active { color: var(--accent); border-bottom-color: var(--accent); }
+  nav button:hover:not(.active) { color: var(--text); }
+  main { max-width: 1100px; margin: 0 auto; padding: 24px 16px; }
+  .sec-title { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; margin-bottom: 20px; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 16px; }
+  .card-title { font-size: 13px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px; }
+  .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 20px; }
+  .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+  .stat-card .label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+  .stat-card .value { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; margin-top: 4px; }
+  .stat-card.low .value { color: var(--low); }
+  .stat-card.ok .value { color: var(--green); }
+  .stat-card.gold .value { color: var(--accent); }
+  .stat-card.blue .value { color: var(--toyo); }
+  .stat-card.purple .value { color: var(--op); }
+  .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 14px; }
+  label { font-size: 12px; color: var(--muted); display: block; margin-bottom: 5px; }
+  input, select { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; font-size: 14px; color: var(--text); font-family: 'Inter', sans-serif; outline: none; transition: border 0.2s; }
+  input:focus, select:focus { border-color: var(--accent); }
+  .btn { padding: 10px 22px; border-radius: 8px; border: none; font-size: 13px; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif; transition: all 0.2s; }
+  .btn-primary { background: var(--accent); color: #000; }
+  .btn-primary:hover { background: #ffb733; }
+  .btn-danger { background: var(--red); color: #fff; }
+  .btn-danger:hover { background: #dc2626; }
+  .btn-green { background: var(--green); color: #000; }
+  .btn-green:hover { background: #16a34a; }
+  .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
+  .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead th { background: var(--bg); padding: 10px 14px; text-align: left; font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; border-bottom: 1px solid var(--border); }
+  tbody tr { border-bottom: 1px solid var(--border); transition: background 0.15s; }
+  tbody tr:hover { background: rgba(232,160,32,0.04); }
+  tbody td { padding: 11px 14px; vertical-align: middle; }
+  .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+  .badge-B { background: rgba(59,130,246,0.15); color: #60a5fa; }
+  .badge-C { background: rgba(168,85,247,0.15); color: #c084fc; }
+  .badge-low { background: rgba(239,68,68,0.15); color: var(--low); }
+  .badge-ok { background: rgba(34,197,94,0.15); color: var(--green); }
+  .badge-TOYO { background: rgba(59,130,246,0.2); color: #60a5fa; }
+  .badge-OP { background: rgba(168,85,247,0.2); color: #c084fc; }
+  .alert { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); border-radius: 10px; padding: 14px 18px; margin-bottom: 16px; font-size: 13px; color: #fca5a5; display: flex; align-items: flex-start; gap: 10px; }
+  .price-table { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
+  .price-card { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+  .price-card.toyo-card { border-color: rgba(59,130,246,0.4); }
+  .price-card.op-card { border-color: rgba(168,85,247,0.4); }
+  .company-header { font-size: 14px; font-weight: 800; padding: 10px 14px; border-radius: 8px; margin-bottom: 14px; }
+  .company-header.toyo { background: rgba(59,130,246,0.15); color: #60a5fa; }
+  .company-header.op { background: rgba(168,85,247,0.15); color: #c084fc; }
+  .price-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .price-row .pr-label { font-size: 12px; color: var(--muted); width: 160px; flex-shrink: 0; }
+  .price-row .pr-input { width: 110px !important; min-width: 110px !important; flex-shrink: 0; background: var(--surface) !important; border: 1.5px solid var(--accent) !important; border-radius: 8px; padding: 9px 12px; font-size: 15px; font-weight: 600; color: var(--text) !important; }
+  .price-row .pr-input:focus { border-color: #ffb733 !important; }
+  .price-row .pr-unit { font-size: 12px; color: var(--muted); }
+  .bill-items { margin-bottom: 14px; }
+  .bill-item-row { display: grid; grid-template-columns: 90px 1fr 70px 80px 36px; gap: 8px; align-items: end; margin-bottom: 10px; }
+  .bill-total { background: var(--bg); border: 1px solid var(--accent); border-radius: 10px; padding: 16px; text-align: right; }
+  .bill-total .total-val { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; color: var(--accent); }
+  .print-bill { background: #fff; color: #111; border-radius: 12px; padding: 28px; max-width: 560px; margin: 0 auto; font-size: 13px; }
+  .print-bill .pb-header { display: flex; align-items: center; gap: 14px; border-bottom: 2px solid #e8a020; padding-bottom: 14px; margin-bottom: 16px; }
+  .print-bill .pb-logo { width: 46px; height: 46px; background: linear-gradient(135deg, #e8a020, #c0760f); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 17px; color: #000; }
+  .print-bill h2 { font-size: 18px; font-weight: 800; color: #e8a020; }
+  .print-bill .pb-sub { font-size: 11px; color: #888; letter-spacing: 1px; text-transform: uppercase; }
+  .print-bill table { width: 100%; border-collapse: collapse; }
+  .print-bill th { background: #f3f4f6; padding: 8px 10px; font-size: 11px; text-align: left; }
+  .print-bill td { padding: 8px 10px; border-bottom: 1px solid #e5e7eb; }
+  .print-bill .pb-total { text-align: right; margin-top: 14px; font-size: 16px; font-weight: 700; color: #e8a020; }
+  .pb-company-row { font-weight: 700; font-size: 12px; padding: 6px 10px; }
+  .pb-toyo { background: #eff6ff; color: #1d4ed8; }
+  .pb-op { background: #faf5ff; color: #7e22ce; }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+  .report-section { margin-bottom: 20px; }
+  .report-section h3 { font-size: 14px; color: var(--muted); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.8px; }
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 16px; }
+  .modal { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 24px; width: 100%; max-width: 560px; max-height: 90vh; overflow-y: auto; }
+  .modal-title { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; margin-bottom: 18px; display: flex; justify-content: space-between; align-items: center; }
+  .close-btn { background: none; border: none; color: var(--muted); font-size: 20px; cursor: pointer; }
+  .hidden { display: none !important; }
+  .sup-card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:16px; margin-bottom:12px; cursor:pointer; transition:all 0.2s; }
+  .sup-card:hover { border-color:var(--accent); transform:translateY(-1px); }
+  .sup-card-top { display:flex; justify-content:space-between; align-items:flex-start; gap:10px; }
+  .sup-name { font-family:'Syne',sans-serif; font-size:16px; font-weight:800; color:var(--text); }
+  .sup-city { font-size:12px; color:var(--muted); margin-top:2px; }
+  .sup-phone { font-size:13px; color:var(--accent); font-weight:600; margin-top:4px; }
+  .sup-stats { display:flex; gap:10px; margin-top:10px; flex-wrap:wrap; }
+  .sup-stat { background:var(--bg); border-radius:8px; padding:6px 12px; font-size:12px; }
+  .sup-stat span { color:var(--muted); }
+  .sup-stat b { color:var(--text); }
+  .pur-item-row { display:grid; grid-template-columns:90px 80px 80px 70px 36px; gap:8px; align-items:end; margin-bottom:8px; }
+  @media(max-width:500px){ .pur-item-row { grid-template-columns:80px 70px 70px 60px 30px; gap:5px; } }
+  @media (max-width: 600px) {
+    .bill-item-row { grid-template-columns: 80px 1fr 60px 70px 30px; gap: 5px; }
+    .form-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-area">
+    <div class="logo-icon">MT</div>
+    <div class="logo-text">
+      <h1>Musaddique Traders</h1>
+      <p>Belt Stock Manager</p>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <div class="header-date" id="hdate"></div>
+    <button id="install-btn" onclick="installApp()" style="display:none;align-items:center;gap:6px;background:var(--accent);color:#000;border:none;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">
+      📲 Install App
+    </button>
+  </div>
+</header>
+
+<nav>
+  <button class="active" onclick="showTab('dashboard',event)">📊 Dashboard</button>
+  <button onclick="showTab('stock',event)">📦 Stock</button>
+  <button onclick="showTab('billing',event)">🧾 Billing</button>
+  <button onclick="showTab('prices',event)">💰 Prices</button>
+  <button onclick="showTab('report',event)">📋 Report</button>
+  <button onclick="showTab('history',event)">🕐 History</button>
+  <button onclick="showTab('purchase',event)">🚚 Purchase</button>
+  <button onclick="showTab('sellers',event)">🤝 Sellers</button>
+</nav>
+
+<main>
+
+  <!-- DASHBOARD -->
+  <div class="tab-content active" id="tab-dashboard">
+    <div class="sec-title">Dashboard</div>
+    <div class="stats-row" id="stats-row"></div>
+    <div id="low-alerts"></div>
+    <div class="card">
+      <div class="card-title">All Stock — Quick View</div>
+      <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
+        <button onclick="dashFilter('')" id="dbf-all" style="padding:6px 16px;border-radius:8px;border:2px solid var(--accent);background:rgba(232,160,32,0.1);color:var(--accent);font-weight:700;cursor:pointer;font-size:13px;">All</button>
+        <button onclick="dashFilter('TOYO')" id="dbf-TOYO" style="padding:6px 16px;border-radius:8px;border:2px solid var(--border);background:var(--bg);color:var(--muted);font-weight:700;cursor:pointer;font-size:13px;">🔵 TOYO</button>
+        <button onclick="dashFilter('OP')" id="dbf-OP" style="padding:6px 16px;border-radius:8px;border:2px solid var(--border);background:var(--bg);color:var(--muted);font-weight:700;cursor:pointer;font-size:13px;">🟣 OP</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Belt Code</th><th>Company</th><th>Section</th><th>Size (inch)</th><th>Qty</th><th>Status</th><th>Value (₹)</th></tr>
+          </thead>
+          <tbody id="dash-table"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- STOCK -->
+  <div class="tab-content" id="tab-stock">
+    <div class="sec-title">Stock Management</div>
+    <div class="card">
+      <div class="card-title">Add / Update Stock</div>
+      <div class="form-grid">
+        <div>
+          <label>Company</label>
+          <select id="s-company">
+            <option value="TOYO">🔵 TOYO</option>
+            <option value="OP">🟣 OP</option>
+          </select>
+        </div>
+        <div>
+          <label>Section</label>
+          <select id="s-section">
+            <option value="B">B Section</option>
+            <option value="C">C Section</option>
+          </select>
+        </div>
+        <div>
+          <label>Belt Size (inches)</label>
+          <input type="number" id="s-size" placeholder="e.g. 132" min="1"/>
+        </div>
+        <div>
+          <label>Quantity</label>
+          <input type="number" id="s-qty" placeholder="e.g. 10" min="0"/>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="addStock()">+ Add to Stock</button>
+        <button class="btn btn-outline" onclick="setStock()">Set Exact Qty</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Deduct from Stock</div>
+      <div class="form-grid">
+        <div>
+          <label>Belt Code (e.g. TOYO-B132)</label>
+          <input type="text" id="d-code" placeholder="TOYO-B132" oninput="this.value=this.value.toUpperCase()"/>
+        </div>
+        <div>
+          <label>Quantity to Deduct</label>
+          <input type="number" id="d-qty" placeholder="e.g. 2" min="1"/>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-danger" onclick="deductStock()">- Deduct Stock</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Full Stock List</div>
+      <div style="margin-bottom:10px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+        <input type="text" id="search-input" placeholder="Search..." style="max-width:150px;" oninput="renderStockTable()"/>
+        <select id="filter-company" onchange="renderStockTable()" style="max-width:130px;">
+          <option value="">All Companies</option>
+          <option value="TOYO">🔵 TOYO</option>
+          <option value="OP">🟣 OP</option>
+        </select>
+        <select id="filter-section" onchange="renderStockTable()" style="max-width:130px;">
+          <option value="">All Sections</option>
+          <option value="B">B Section</option>
+          <option value="C">C Section</option>
+        </select>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Belt Code</th><th>Company</th><th>Section</th><th>Size</th><th>Qty</th><th>Status</th><th>Action</th></tr>
+          </thead>
+          <tbody id="stock-table"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- BILLING -->
+  <div class="tab-content" id="tab-billing">
+    <div class="sec-title">Bill Banana</div>
+    <div class="card">
+      <div class="card-title">Customer / Seller Details</div>
+      <div class="form-grid">
+        <div>
+          <label>Seller Select karo (optional)</label>
+          <select id="seller-select" onchange="onSellerSelect()" style="font-weight:600;">
+            <option value="">-- Walk-in / Naya Customer --</option>
+          </select>
+        </div>
+        <div><label>Customer Name</label><input type="text" id="cust-name" placeholder="Customer ka naam"/></div>
+        <div><label>Bill No.</label><input type="text" id="bill-no" placeholder="Auto"/></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Belt Items Add Karo</div>
+      <div class="bill-items" id="bill-items"></div>
+      <button class="btn btn-outline" onclick="addBillItem()">+ Add Belt</button>
+    </div>
+    <div class="bill-total">
+      <div style="font-size:13px;color:var(--muted);margin-bottom:4px;">Total Amount</div>
+      <div class="total-val" id="bill-total-val">₹0.00</div>
+    </div>
+    <div class="btn-row" style="margin-top:16px;">
+      <button class="btn btn-primary" onclick="generateBill()">Generate Bill</button>
+      <button class="btn btn-outline" onclick="clearBill()">Clear</button>
+    </div>
+  </div>
+
+  <!-- PRICES -->
+  <div class="tab-content" id="tab-prices">
+    <div class="sec-title">Price Manager</div>
+    <div class="card">
+      <p style="font-size:13px;color:var(--muted);margin-bottom:16px;">TOYO aur OP dono companies ke B aur C section ke prices alag set karo — total 8 price slabs.</p>
+      <div class="price-table" id="price-cards"></div>
+      <div style="margin-top:16px;">
+        <button class="btn btn-primary" onclick="savePrices()">💾 Save All Prices</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Price History</div>
+      <div id="price-history-list" style="font-size:13px;color:var(--muted);"></div>
+    </div>
+  </div>
+
+  <!-- REPORT -->
+  <div class="tab-content" id="tab-report">
+    <div class="sec-title">Weekly Report</div>
+    <div class="card">
+      <div id="weekly-report-content"></div>
+      <div class="btn-row" style="margin-top:16px;">
+        <button class="btn btn-primary" onclick="window.print()">🖨️ Print Report</button>
+        <button class="btn btn-outline" onclick="generateReport()">🔄 Refresh</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- HISTORY -->
+  <div class="tab-content" id="tab-history">
+    <div class="sec-title">Sale History</div>
+    <div class="card">
+      <div class="card-title">Filter karo</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;">
+        <div>
+          <label>Customer Search</label>
+          <input type="text" id="hist-search" placeholder="Naam ya belt code..." style="max-width:180px;" oninput="renderHistory()"/>
+        </div>
+        <div>
+          <label>Company</label>
+          <select id="hist-company" onchange="renderHistory()" style="max-width:120px;">
+            <option value="">Sab</option>
+            <option value="TOYO">🔵 TOYO</option>
+            <option value="OP">🟣 OP</option>
+          </select>
+        </div>
+        <div>
+          <label>Date From</label>
+          <input type="date" id="hist-from" onchange="renderHistory()" style="max-width:150px;"/>
+        </div>
+        <div>
+          <label>Date To</label>
+          <input type="date" id="hist-to" onchange="renderHistory()" style="max-width:150px;"/>
+        </div>
+        <button class="btn btn-outline" onclick="clearHistoryFilter()">Reset</button>
+        <button class="btn btn-danger" style="margin-left:auto;" onclick="clearAllHistory()">🗑️ Sab Clear</button>
+      </div>
+    </div>
+
+    <div class="card" id="hist-summary-card" style="display:none;">
+      <div class="card-title">Filter Summary</div>
+      <div id="hist-summary" style="display:flex;gap:16px;flex-wrap:wrap;"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Sale Records</div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Tareekh / Time</th>
+              <th>Bill No</th>
+              <th>Customer</th>
+              <th>Belt Code</th>
+              <th>Company</th>
+              <th>Section</th>
+              <th>Size</th>
+              <th>Qty</th>
+              <th>Amount</th>
+            </tr>
+          </thead>
+          <tbody id="history-table"></tbody>
+        </table>
+      </div>
+      <div id="hist-empty" style="text-align:center;padding:30px;color:var(--muted);font-size:14px;display:none;">
+        📭 Koi record nahi mila
+      </div>
+    </div>
+  </div>
+
+  <!-- PURCHASE -->
+  <div class="tab-content" id="tab-purchase">
+    <div class="sec-title">Purchase Manager</div>
+
+    <!-- Supplier add card -->
+    <div class="card">
+      <div class="card-title">📋 Supplier / Party Add Karo</div>
+      <div class="form-grid">
+        <div><label>Party / Supplier Naam</label><input type="text" id="sup-name" placeholder="e.g. Mumbai Wale, Raj Traders"/></div>
+        <div><label>Sheher / City</label><input type="text" id="sup-city" placeholder="e.g. Mumbai, Delhi"/></div>
+        <div><label>Contact Number</label><input type="tel" id="sup-phone" placeholder="e.g. 9876543210"/></div>
+        <div><label>Default Kharid Rate (₹/inch)</label><input type="number" id="sup-defrate" placeholder="e.g. 2.50" step="0.01" min="0"/></div>
+        <div><label>Note (optional)</label><input type="text" id="sup-note" placeholder="Koi bhi note..."/></div>
+      </div>
+      <button class="btn btn-primary" onclick="addSupplier()">+ Supplier Save Karo</button>
+    </div>
+
+    <!-- Suppliers list -->
+    <div id="suppliers-list"></div>
+  </div>
+
+  <!-- SELLERS -->
+  <div class="tab-content" id="tab-sellers">
+    <div class="sec-title">Sellers</div>
+
+    <div class="card">
+      <div class="card-title">🤝 Naya Seller Add Karo</div>
+      <div class="form-grid">
+        <div><label>Seller Naam</label><input type="text" id="sel-name" placeholder="e.g. Ramesh Bhai, Ali Trading"/></div>
+        <div><label>Sheher / City</label><input type="text" id="sel-city" placeholder="e.g. Surat, Delhi"/></div>
+        <div><label>Contact Number</label><input type="tel" id="sel-phone" placeholder="e.g. 9876543210"/></div>
+        <div><label>Note (optional)</label><input type="text" id="sel-note" placeholder="Koi bhi note..."/></div>
+      </div>
+      <button class="btn btn-primary" onclick="addSeller()">+ Seller Save Karo</button>
+    </div>
+
+    <div id="sellers-list"></div>
+  </div>
+
+</main>
+
+<!-- SELLER DETAIL MODAL -->
+<div class="modal-overlay hidden" id="sel-modal">
+  <div class="modal" style="max-width:680px;">
+    <div class="modal-title">
+      <span id="sel-modal-title">Seller Detail</span>
+      <button class="close-btn" onclick="document.getElementById('sel-modal').classList.add('hidden')">✕</button>
+    </div>
+
+    <!-- Seller info -->
+    <div id="sel-modal-info" style="background:var(--bg);border-radius:10px;padding:14px;margin-bottom:16px;font-size:13px;"></div>
+
+    <!-- Payment summary bar -->
+    <div id="sel-payment-summary" style="margin-bottom:16px;"></div>
+
+    <!-- Add payment section -->
+    <div style="background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.3);border-radius:10px;padding:16px;margin-bottom:16px;">
+      <div style="font-size:12px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;">💵 Payment Add Karo</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+        <div>
+          <label>Amount (₹)</label>
+          <input type="number" id="pay-amount" placeholder="e.g. 5000" min="0" step="0.01" style="margin-top:4px;font-size:16px;font-weight:700;border-color:var(--green)!important;"/>
+        </div>
+        <div>
+          <label>Tareekh</label>
+          <input type="date" id="pay-date" style="margin-top:4px;"/>
+        </div>
+      </div>
+      <div style="margin-bottom:10px;">
+        <label>Note (optional)</label>
+        <input type="text" id="pay-note" placeholder="e.g. Cash, UPI, Cheque..." style="margin-top:4px;"/>
+      </div>
+      <button class="btn btn-green" onclick="saveSellerPayment()">✅ Payment Save Karo</button>
+    </div>
+
+    <!-- Payment history collapsible -->
+    <div onclick="toggleSection('sel-payment-history-body')" 
+      style="background:var(--surface);border:1px solid rgba(59,130,246,0.3);border-radius:10px;padding:12px 16px;margin-bottom:16px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;">
+      <span style="font-size:13px;font-weight:700;color:#60a5fa;">💳 Payment History</span>
+      <span id="sel-payment-history-arrow" style="color:var(--muted);font-size:16px;">▼</span>
+    </div>
+    <div id="sel-payment-history-body" style="display:none;margin-top:-10px;margin-bottom:16px;">
+      <div id="sel-payment-history" style="background:var(--surface);border:1px solid rgba(59,130,246,0.2);border-radius:0 0 10px 10px;padding:12px;"></div>
+    </div>
+
+    <!-- Bill history collapsible -->
+    <div onclick="toggleSection('sel-bill-history-body')"
+      style="background:var(--surface);border:1px solid rgba(232,160,32,0.3);border-radius:10px;padding:12px 16px;margin-bottom:16px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;">
+      <span style="font-size:13px;font-weight:700;color:var(--accent);">🧾 Bill History</span>
+      <span id="sel-bill-history-arrow" style="color:var(--muted);font-size:16px;">▼</span>
+    </div>
+    <div id="sel-bill-history-body" style="display:none;margin-top:-10px;">
+      <div id="sel-bill-history" style="background:var(--surface);border:1px solid rgba(232,160,32,0.2);border-radius:0 0 10px 10px;padding:12px;"></div>
+    </div>
+  </div>
+</div>
+<div class="modal-overlay hidden" id="sup-modal">
+  <div class="modal" style="max-width:680px;">
+    <div class="modal-title">
+      <span id="sup-modal-title">Supplier Detail</span>
+      <button class="close-btn" onclick="document.getElementById('sup-modal').classList.add('hidden')">✕</button>
+    </div>
+
+    <!-- Supplier info bar -->
+    <div id="sup-modal-info" style="background:var(--bg);border-radius:10px;padding:14px;margin-bottom:16px;font-size:13px;"></div>
+
+    <!-- Payment summary bar -->
+    <div id="sup-payment-summary" style="margin-bottom:16px;"></div>
+
+    <!-- Add payment section -->
+    <div style="background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.3);border-radius:10px;padding:16px;margin-bottom:16px;">
+      <div style="font-size:12px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;">💵 Payment Add Karo (Supplier Ko Diya)</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+        <div>
+          <label>Amount (₹)</label>
+          <input type="number" id="sup-pay-amount" placeholder="e.g. 5000" min="0" step="0.01" style="margin-top:4px;font-size:16px;font-weight:700;border-color:var(--green)!important;"/>
+        </div>
+        <div>
+          <label>Tareekh</label>
+          <input type="date" id="sup-pay-date" style="margin-top:4px;"/>
+        </div>
+      </div>
+      <div style="margin-bottom:10px;">
+        <label>Note (optional)</label>
+        <input type="text" id="sup-pay-note" placeholder="e.g. Cash, UPI, Cheque..." style="margin-top:4px;"/>
+      </div>
+      <button class="btn btn-green" onclick="saveSupplierPayment()">✅ Payment Save Karo</button>
+    </div>
+
+    <!-- Payment history collapsible -->
+    <div onclick="toggleSection('sup-payment-history-body')"
+      style="background:var(--surface);border:1px solid rgba(59,130,246,0.3);border-radius:10px;padding:12px 16px;margin-bottom:16px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;">
+      <span style="font-size:13px;font-weight:700;color:#60a5fa;">💳 Payment History</span>
+      <span id="sup-payment-history-arrow" style="color:var(--muted);font-size:16px;">▼</span>
+    </div>
+    <div id="sup-payment-history-body" style="display:none;margin-top:-10px;margin-bottom:16px;">
+      <div id="sup-payment-history" style="background:var(--surface);border:1px solid rgba(59,130,246,0.2);border-radius:0 0 10px 10px;padding:12px;"></div>
+    </div>
+
+    <!-- Add purchase entry -->
+    <div style="background:var(--bg);border-radius:10px;padding:16px;margin-bottom:16px;">
+      <div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;">📦 Naya Maal Add Karo → Stock Automatic Update Hoga</div>
+      <div id="pur-items-container"></div>
+      <div style="display:flex;gap:10px;margin-top:10px;flex-wrap:wrap;">
+        <button class="btn btn-outline" onclick="addPurItem()">+ Belt Add Karo</button>
+        <div style="flex:1;min-width:150px;">
+          <label>Purchase Tareekh</label>
+          <input type="date" id="pur-date" style="margin-top:4px;"/>
+        </div>
+        <div style="flex:1;min-width:150px;">
+          <label>Note / Invoice No</label>
+          <input type="text" id="pur-note-entry" placeholder="e.g. Inv-001" style="margin-top:4px;"/>
+        </div>
+      </div>
+      <div style="margin-top:12px;">
+        <button class="btn btn-green" onclick="savePurchaseEntry()">✅ Save & Stock Add Karo</button>
+      </div>
+    </div>
+
+    <!-- Purchase history collapsible -->
+    <div onclick="toggleSection('sup-purchase-history-body')"
+      style="background:var(--surface);border:1px solid rgba(232,160,32,0.3);border-radius:10px;padding:12px 16px;margin-bottom:16px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;">
+      <span style="font-size:13px;font-weight:700;color:var(--accent);">🧾 Purchase History</span>
+      <span id="sup-purchase-history-arrow" style="color:var(--muted);font-size:16px;">▼</span>
+    </div>
+    <div id="sup-purchase-history-body" style="display:none;margin-top:-10px;">
+      <div id="sup-purchase-history" style="background:var(--surface);border:1px solid rgba(232,160,32,0.2);border-radius:0 0 10px 10px;padding:12px;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- BILL MODAL -->
+<div class="modal-overlay hidden" id="bill-modal">
+  <div class="modal">
+    <div class="modal-title">
+      Bill Preview
+      <button class="close-btn" onclick="closeBillModal()">✕</button>
+    </div>
+    <div id="bill-preview"></div>
+    <div class="btn-row" style="margin-top:18px;">
+      <button class="btn btn-primary" onclick="printBill()">🖨️ Print</button>
+      <button class="btn btn-outline" id="save-img-btn" onclick="saveBillAsImage()">🖼️ Save Image</button>
+      <button class="btn btn-green" id="confirm-deduct-btn" onclick="confirmBillDeduct()">✅ Confirm & Deduct</button>
+      <button class="btn btn-outline" onclick="closeBillAndClear()">✖ Close</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" style="position:fixed;bottom:24px;right:24px;background:var(--green);color:#000;padding:12px 20px;border-radius:10px;font-size:13px;font-weight:600;display:none;z-index:300;box-shadow:0 4px 20px rgba(0,0,0,0.4);"></div>
+
+<script>
+const LOW_LIMIT = 4;
+const COMPANIES = ['TOYO','OP'];
+const SECTIONS = ['B','C'];
+
+function getData() { return JSON.parse(localStorage.getItem('mt_stock_v2') || '{}'); }
+function saveData(d) { localStorage.setItem('mt_stock_v2', JSON.stringify(d)); }
+
+function getDefaultPrices() {
+  return {
+    TOYO: {
+      B: [{label:'B1-B99 (upto 99")',maxInch:99,rate:2.5},{label:'B100+ (100" & above)',maxInch:9999,rate:2.8}],
+      C: [{label:'C1-C100 (upto 100")',maxInch:100,rate:3.2},{label:'C101+ (101" & above)',maxInch:9999,rate:3.5}]
+    },
+    OP: {
+      B: [{label:'B1-B99 (upto 99")',maxInch:99,rate:2.3},{label:'B100+ (100" & above)',maxInch:9999,rate:2.6}],
+      C: [{label:'C1-C100 (upto 100")',maxInch:100,rate:3.0},{label:'C101+ (101" & above)',maxInch:9999,rate:3.3}]
+    }
+  };
+}
+
+function getPrices() { return JSON.parse(localStorage.getItem('mt_prices_v2') || JSON.stringify(getDefaultPrices())); }
+function savePriceData(p) {
+  localStorage.setItem('mt_prices_v2', JSON.stringify(p));
+  let hist = JSON.parse(localStorage.getItem('mt_price_hist_v2') || '[]');
+  hist.unshift({date:new Date().toLocaleString('en-IN'),prices:JSON.parse(JSON.stringify(p))});
+  hist = hist.slice(0,10);
+  localStorage.setItem('mt_price_hist_v2', JSON.stringify(hist));
+}
+
+function getBillNo() {
+  let n = parseInt(localStorage.getItem('mt_billno') || '100');
+  localStorage.setItem('mt_billno', n+1);
+  return 'MT-' + String(n+1).padStart(4,'0');
+}
+
+function getPrice(company, section, inch) {
+  const prices = getPrices();
+  const slabs = (prices[company] && prices[company][section]) ? prices[company][section] : [];
+  for (let s of slabs) { if (inch <= s.maxInch) return s.rate; }
+  return slabs[slabs.length-1]?.rate || 0;
+}
+
+// Code format: "TOYO-B132" or "OP-C145"
+function parseBelt(code) {
+  const m = code.match(/^(TOYO|OP)-([BC])(\d+)$/i);
+  if (!m) return null;
+  return {company:m[1].toUpperCase(), section:m[2].toUpperCase(), inch:parseInt(m[3])};
+}
+
+function beltValue(code, qty) {
+  const p = parseBelt(code);
+  if (!p) return 0;
+  return getPrice(p.company, p.section, p.inch) * p.inch * qty;
+}
+
+function showTab(id, evt) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  if (evt && evt.target) evt.target.classList.add('active');
+  if (id==='dashboard') renderDashboard();
+  if (id==='stock') renderStockTable();
+  if (id==='prices') renderPriceCards();
+  if (id==='report') generateReport();
+  if (id==='history') renderHistory();
+  if (id==='purchase') renderSuppliers();
+  if (id==='billing') { renderBillItems(); populateSellerDropdown(); }
+  if (id==='sellers') { renderSellers(); }
+}
+
+function toast(msg, color) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.style.background = color || 'var(--green)'; t.style.display = 'block';
+  setTimeout(() => t.style.display = 'none', 2800);
+}
+
+// DASHBOARD
+let dashCompanyFilter = '';
+function dashFilter(company) {
+  dashCompanyFilter = company;
+  ['all','TOYO','OP'].forEach(k => {
+    const btn = document.getElementById('dbf-'+k);
+    if (!btn) return;
+    const active = (k === company) || (k === 'all' && company === '');
+    btn.style.borderColor = active ? (k==='TOYO'?'#3b82f6':k==='OP'?'#a855f7':'var(--accent)') : 'var(--border)';
+    btn.style.color = active ? (k==='TOYO'?'#60a5fa':k==='OP'?'#c084fc':'var(--accent)') : 'var(--muted)';
+    btn.style.background = active ? (k==='TOYO'?'rgba(59,130,246,0.1)':k==='OP'?'rgba(168,85,247,0.1)':'rgba(232,160,32,0.1)') : 'var(--bg)';
+  });
+  renderDashboard();
+}
+
+function renderDashboard() {
+  const data = getData();
+  const keys = Object.keys(data);
+  const lowItems = keys.filter(k => data[k] < LOW_LIMIT);
+  const totalQty = keys.reduce((s,k) => s+data[k], 0);
+  const totalVal = keys.reduce((s,k) => s+beltValue(k,data[k]), 0);
+  const toyoKeys = keys.filter(k => k.startsWith('TOYO-'));
+  const opKeys = keys.filter(k => k.startsWith('OP-'));
+  const toyoVal = toyoKeys.reduce((s,k) => s+beltValue(k,data[k]), 0);
+  const opVal = opKeys.reduce((s,k) => s+beltValue(k,data[k]), 0);
+
+  document.getElementById('stats-row').innerHTML = `
+    <div class="stat-card gold"><div class="label">Belt Types</div><div class="value">${keys.length}</div></div>
+    <div class="stat-card ok"><div class="label">Total Qty</div><div class="value">${totalQty}</div></div>
+    <div class="stat-card ${lowItems.length>0?'low':'ok'}"><div class="label">Low Stock</div><div class="value">${lowItems.length}</div></div>
+    <div class="stat-card blue"><div class="label">TOYO Value</div><div class="value" style="font-size:17px;">₹${toyoVal.toFixed(0)}</div></div>
+    <div class="stat-card purple"><div class="label">OP Value</div><div class="value" style="font-size:17px;">₹${opVal.toFixed(0)}</div></div>
+    <div class="stat-card gold"><div class="label">Total Value</div><div class="value" style="font-size:17px;">₹${totalVal.toFixed(0)}</div></div>
+  `;
+
+  const alertDiv = document.getElementById('low-alerts');
+  alertDiv.innerHTML = lowItems.length > 0
+    ? `<div class="alert"><span style="font-size:18px;flex-shrink:0;">⚠️</span><div><b>Low Stock!</b> ${lowItems.join(', ')}</div></div>`
+    : '';
+
+  let filtered = keys.sort();
+  if (dashCompanyFilter) filtered = filtered.filter(k => k.startsWith(dashCompanyFilter+'-'));
+
+  const tbody = document.getElementById('dash-table');
+  tbody.innerHTML = filtered.length===0 ? '<tr><td colspan="7" style="text-align:center;padding:20px;color:var(--muted);">Koi stock nahi</td></tr>' : '';
+  filtered.forEach(code => {
+    const p = parseBelt(code); if (!p) return;
+    const qty = data[code]; const isLow = qty < LOW_LIMIT; const val = beltValue(code,qty);
+    tbody.innerHTML += `<tr>
+      <td><b>${code}</b></td>
+      <td><span class="badge badge-${p.company}">${p.company}</span></td>
+      <td><span class="badge badge-${p.section}">${p.section}</span></td>
+      <td>${p.inch}"</td><td>${qty}</td>
+      <td><span class="badge ${isLow?'badge-low':'badge-ok'}">${isLow?'⚠️ Low':'✅ OK'}</span></td>
+      <td>₹${val.toFixed(2)}</td>
+    </tr>`;
+  });
+}
+
+// STOCK
+function addStock() {
+  const company = document.getElementById('s-company').value;
+  const sec = document.getElementById('s-section').value;
+  const size = parseInt(document.getElementById('s-size').value);
+  const qty = parseInt(document.getElementById('s-qty').value);
+  if (!size || !qty || qty<1) { toast('Size aur quantity sahi bharo!','var(--red)'); return; }
+  const code = company+'-'+sec+size;
+  const data = getData(); data[code] = (data[code]||0)+qty; saveData(data);
+  toast(`✅ ${code} mein ${qty} belt add hua. Total: ${data[code]}`);
+  document.getElementById('s-size').value=''; document.getElementById('s-qty').value='';
+}
+
+function setStock() {
+  const company = document.getElementById('s-company').value;
+  const sec = document.getElementById('s-section').value;
+  const size = parseInt(document.getElementById('s-size').value);
+  const qty = parseInt(document.getElementById('s-qty').value);
+  if (!size || isNaN(qty) || qty<0) { toast('Sahi values bharo!','var(--red)'); return; }
+  const code = company+'-'+sec+size;
+  const data = getData(); data[code]=qty; saveData(data);
+  toast(`✅ ${code} ka stock set kiya: ${qty}`);
+  document.getElementById('s-size').value=''; document.getElementById('s-qty').value='';
+}
+
+function deductStock() {
+  const code = document.getElementById('d-code').value.trim().toUpperCase();
+  const qty = parseInt(document.getElementById('d-qty').value);
+  if (!code||!qty) { toast('Code aur quantity bharo!','var(--red)'); return; }
+  const data = getData();
+  if (data[code]===undefined) { toast(`${code} stock mein nahi hai!`,'var(--red)'); return; }
+  if (data[code]<qty) { toast(`Sirf ${data[code]} belt hai!`,'var(--red)'); return; }
+  data[code]-=qty; saveData(data);
+
+  // Save to history
+  const p = parseBelt(code);
+  const rate = p ? getPrice(p.company,p.section,p.inch) : 0;
+  const now = new Date();
+  const hist = getHistory();
+  hist.unshift({
+    id: Date.now()+Math.random(),
+    date: now.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}),
+    time: now.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}),
+    dateISO: now.toISOString().split('T')[0],
+    billNo: 'Manual',
+    customer: 'Manual Deduct',
+    beltCode: code,
+    company: p?p.company:'',
+    section: p?p.section:'',
+    inch: p?p.inch:0,
+    qty: qty,
+    amount: p ? rate*p.inch*qty : 0
+  });
+  saveHistory(hist);
+
+  toast(`✅ ${code} se ${qty} deduct. Baaki: ${data[code]}`);
+  document.getElementById('d-code').value=''; document.getElementById('d-qty').value='';
+}
+
+function deleteStock(code) {
+  if (!confirm(`${code} ko stock se hatao?`)) return;
+  const data = getData(); delete data[code]; saveData(data); renderStockTable();
+  toast(`${code} hata diya`,'var(--low)');
+}
+
+function renderStockTable() {
+  const data = getData();
+  const search = (document.getElementById('search-input')?.value||'').toUpperCase();
+  const filterCo = document.getElementById('filter-company')?.value||'';
+  const filterSec = document.getElementById('filter-section')?.value||'';
+  let keys = Object.keys(data).sort();
+  if (search) keys = keys.filter(k => k.includes(search));
+  if (filterCo) keys = keys.filter(k => k.startsWith(filterCo+'-'));
+  if (filterSec) keys = keys.filter(k => { const p=parseBelt(k); return p&&p.section===filterSec; });
+  const tbody = document.getElementById('stock-table');
+  tbody.innerHTML = keys.length===0 ? '<tr><td colspan="7" style="text-align:center;padding:20px;color:var(--muted);">Koi belt nahi</td></tr>' : '';
+  keys.forEach(code => {
+    const p = parseBelt(code); if (!p) return;
+    const qty = data[code]; const isLow = qty<LOW_LIMIT;
+    tbody.innerHTML += `<tr>
+      <td><b>${code}</b></td>
+      <td><span class="badge badge-${p.company}">${p.company}</span></td>
+      <td><span class="badge badge-${p.section}">${p.section}</span></td>
+      <td>${p.inch}"</td><td><b>${qty}</b></td>
+      <td><span class="badge ${isLow?'badge-low':'badge-ok'}">${isLow?'⚠️ Low':'✅ OK'}</span></td>
+      <td><button class="btn btn-danger" style="padding:6px 12px;font-size:11px;" onclick="deleteStock('${code}')">Delete</button></td>
+    </tr>`;
+  });
+}
+
+// BILLING
+let billItems = [{company:'TOYO', code:'', qty:1}];
+
+function renderBillItems() {
+  const container = document.getElementById('bill-items');
+  let html = '';
+  billItems.forEach((item,i) => {
+    const fullCode = item.company&&item.code ? item.company+'-'+item.code : '';
+    const p = fullCode ? parseBelt(fullCode) : null;
+    const rate = p ? getPrice(p.company,p.section,p.inch) : 0;
+    const subtotal = p ? (rate*p.inch*item.qty).toFixed(2) : '0.00';
+    html += `
+      <div class="bill-item-row">
+        <div>
+          ${i===0?'<label>Company</label>':''}
+          <select onchange="billItems[${i}].company=this.value;recalcBillRow(${i})">
+            <option value="TOYO" ${item.company==='TOYO'?'selected':''}>TOYO</option>
+            <option value="OP" ${item.company==='OP'?'selected':''}>OP</option>
+          </select>
+        </div>
+        <div>
+          ${i===0?'<label>Belt Code (e.g. B132)</label>':''}
+          <input type="text" value="${item.code}" placeholder="B132"
+            onchange="billItems[${i}].code=this.value.toUpperCase();this.value=this.value.toUpperCase();recalcBillRow(${i})"/>
+        </div>
+        <div>
+          ${i===0?'<label>Qty</label>':''}
+          <input type="number" value="${item.qty}" min="1"
+            oninput="billItems[${i}].qty=+this.value||1;recalcBillRow(${i})"/>
+        </div>
+        <div>
+          ${i===0?'<label>Subtotal</label>':''}
+          <input readonly id="bsubtotal-${i}" value="₹${subtotal}" style="color:var(--accent);font-weight:600;"/>
+        </div>
+        <div>
+          ${i===0?'<label>&nbsp;</label>':''}
+          <button class="btn btn-danger" style="padding:8px 10px;" onclick="removeBillItem(${i})">✕</button>
+        </div>
+      </div>`;
+  });
+  container.innerHTML = html;
+  updateBillTotal();
+}
+
+function recalcBillRow(i) {
+  const item = billItems[i];
+  const fullCode = item.company&&item.code ? item.company+'-'+item.code : '';
+  const p = fullCode ? parseBelt(fullCode) : null;
+  const rate = p ? getPrice(p.company,p.section,p.inch) : 0;
+  const subtotal = p ? (rate*p.inch*item.qty).toFixed(2) : '0.00';
+  const el = document.getElementById('bsubtotal-'+i);
+  if (el) el.value = '₹'+subtotal;
+  updateBillTotal();
+}
+
+function addBillItem() { billItems.push({company:'TOYO',code:'',qty:1}); renderBillItems(); }
+
+function removeBillItem(i) {
+  billItems.splice(i,1);
+  if (billItems.length===0) billItems=[{company:'TOYO',code:'',qty:1}];
+  renderBillItems();
+}
+
+function updateBillTotal() {
+  let total = 0;
+  billItems.forEach(item => {
+    const fullCode = item.company&&item.code ? item.company+'-'+item.code : '';
+    const p = fullCode ? parseBelt(fullCode) : null;
+    if (p) total += getPrice(p.company,p.section,p.inch)*p.inch*item.qty;
+  });
+  document.getElementById('bill-total-val').textContent = '₹'+total.toFixed(2);
+}
+
+let pendingBillItems = [];
+
+function generateBill() {
+  const cust = document.getElementById('cust-name').value.trim() || 'Walk-in Customer';
+  const validItems = billItems.filter(item => {
+    const fc = item.company&&item.code ? item.company+'-'+item.code : '';
+    return parseBelt(fc) && item.qty>0;
+  });
+  if (validItems.length===0) { toast('Koi valid belt nahi!','var(--red)'); return; }
+  const billNo = document.getElementById('bill-no').value || getBillNo();
+  document.getElementById('bill-no').value = billNo;
+
+  const toyoItems = validItems.filter(i => i.company==='TOYO');
+  const opItems = validItems.filter(i => i.company==='OP');
+  let total = 0;
+
+  function buildRows(items, company) {
+    if (items.length===0) return '';
+    let r = `<tr><td colspan="4" class="pb-company-row pb-${company.toLowerCase()}">🏭 ${company} Company</td></tr>`;
+    items.forEach(item => {
+      const fc = item.company+'-'+item.code;
+      const p = parseBelt(fc);
+      const rate = getPrice(p.company,p.section,p.inch);
+      const sub = rate*p.inch*item.qty; total+=sub;
+      r += `<tr><td>${fc}</td><td>${p.section} Section, ${p.inch}"</td><td>${item.qty}</td><td>₹${sub.toFixed(2)}</td></tr>`;
+    });
+    return r;
+  }
+
+  const rows = buildRows(toyoItems,'TOYO') + buildRows(opItems,'OP');
+  const date = new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
+
+  document.getElementById('bill-preview').innerHTML = `
+    <div class="print-bill" id="printable-bill">
+      <div class="pb-header">
+        <div class="pb-logo">MT</div>
+        <div><h2>Musaddique Traders</h2><div class="pb-sub">Belt Stock Manager</div></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:14px;font-size:12px;">
+        <div><b>Customer:</b> ${cust}</div>
+        <div><b>Bill No:</b> ${billNo}<br/><b>Date:</b> ${date}</div>
+      </div>
+      <table>
+        <thead><tr><th>Code</th><th>Description</th><th>Qty</th><th>Amount</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+      <div class="pb-total">Grand Total: ₹${total.toFixed(2)}</div>
+      <div style="margin-top:16px;font-size:11px;color:#888;text-align:center;">Thank you! — Musaddique Traders</div>
+    </div>`;
+
+  pendingBillItems = validItems;
+  document.getElementById('bill-modal').classList.remove('hidden');
+}
+
+function confirmBillDeduct() {
+  const data = getData();
+  let errors = [];
+  pendingBillItems.forEach(item => {
+    const fc = (item.company+'-'+item.code).toUpperCase();
+    if ((data[fc]||0)<item.qty) errors.push(`${fc}: sirf ${data[fc]||0} hai`);
+  });
+  if (errors.length>0) { toast('Stock kam hai: '+errors.join(', '),'var(--red)'); return; }
+  pendingBillItems.forEach(item => {
+    const fc = (item.company+'-'+item.code).toUpperCase();
+    data[fc]=(data[fc]||0)-item.qty;
+  });
+  saveData(data);
+
+  // Save to history
+  const billNo = document.getElementById('bill-no').value || '';
+  const custName = document.getElementById('cust-name').value.trim() || 'Walk-in Customer';
+  const now = new Date();
+  const hist = getHistory();
+  pendingBillItems.forEach(item => {
+    const fc = (item.company+'-'+item.code).toUpperCase();
+    const p = parseBelt(fc);
+    const rate = p ? getPrice(p.company,p.section,p.inch) : 0;
+    const amount = p ? rate*p.inch*item.qty : 0;
+    hist.unshift({
+      id: Date.now()+Math.random(),
+      date: now.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}),
+      time: now.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}),
+      dateISO: now.toISOString().split('T')[0],
+      billNo: billNo,
+      customer: custName,
+      beltCode: fc,
+      company: item.company,
+      section: p?p.section:'',
+      inch: p?p.inch:0,
+      qty: item.qty,
+      amount: amount
+    });
+  });
+  saveHistory(hist);
+
+  // Save to seller history if seller selected
+  const selId = parseInt(document.getElementById('seller-select')?.value);
+  if (selId) {
+    const selBills = getSellerBills();
+    const totalAmt = pendingBillItems.reduce((s, item) => {
+      const fc = (item.company+'-'+item.code).toUpperCase();
+      const p = parseBelt(fc);
+      return s + (p ? getPrice(p.company,p.section,p.inch)*p.inch*item.qty : 0);
+    }, 0);
+    selBills.unshift({
+      id: Date.now(),
+      sellerId: selId,
+      billNo: billNo,
+      customer: custName,
+      date: now.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}),
+      dateISO: now.toISOString().split('T')[0],
+      time: now.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}),
+      items: pendingBillItems.map(item => {
+        const fc = (item.company+'-'+item.code).toUpperCase();
+        const p = parseBelt(fc);
+        const rate = p ? getPrice(p.company,p.section,p.inch) : 0;
+        return { beltCode:fc, company:item.company, section:p?p.section:'', inch:p?p.inch:0, qty:item.qty, amount:rate*(p?p.inch:0)*item.qty };
+      }),
+      totalAmount: totalAmt
+    });
+    saveSellerBills(selBills);
+  }
+
+  const btn = document.getElementById('confirm-deduct-btn');
+  if (btn) { btn.textContent='✅ Stock Deducted!'; btn.disabled=true; btn.style.background='#16a34a'; }
+  toast('✅ Stock update aur history save ho gayi!');
+}
+
+function saveBillAsImage() {
+  const billEl = document.getElementById('printable-bill');
+  if (!billEl) { toast('Pehle bill generate karo!', 'var(--red)'); return; }
+  const btn = document.getElementById('save-img-btn');
+  btn.textContent = '⏳ Saving...'; btn.disabled = true;
+
+  // Use canvas API directly without html2canvas
+  try {
+    const billNo = document.getElementById('bill-no').value || 'bill';
+    const w = 560;
+    const lines = billEl.innerText.split('\n').filter(l => l.trim());
+
+    // Get bill data from DOM
+    const html = billEl.innerHTML;
+    const blob = new Blob([`<!DOCTYPE html><html><head><meta charset="UTF-8">
+      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
+      <style>
+        *{box-sizing:border-box;margin:0;padding:0;}
+        body{font-family:Inter,sans-serif;background:#fff;padding:0;width:560px;}
+        .print-bill{background:#fff;color:#111;padding:28px;font-size:13px;}
+        .pb-header{display:flex;align-items:center;gap:14px;border-bottom:2px solid #e8a020;padding-bottom:14px;margin-bottom:16px;}
+        .pb-logo{width:46px;height:46px;background:linear-gradient(135deg,#e8a020,#c0760f);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:Syne,sans-serif;font-weight:800;font-size:17px;color:#000;}
+        h2{color:#e8a020;font-size:18px;font-family:Syne,sans-serif;}
+        .pb-sub{font-size:11px;color:#888;letter-spacing:1px;text-transform:uppercase;}
+        table{width:100%;border-collapse:collapse;}
+        th{background:#f3f4f6;padding:8px 10px;font-size:11px;text-align:left;}
+        td{padding:8px 10px;border-bottom:1px solid #e5e7eb;}
+        .pb-total{text-align:right;margin-top:14px;font-size:16px;font-weight:700;color:#e8a020;}
+        .pb-company-row{font-weight:700;font-size:12px;padding:6px 10px;}
+        .pb-toyo{background:#eff6ff;color:#1d4ed8;}
+        .pb-op{background:#faf5ff;color:#7e22ce;}
+      </style></head><body>${html}</body></html>`], {type: 'text/html'});
+
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `MT-Bill-${billNo}.html`;
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+    btn.textContent = '🖼️ Save Image'; btn.disabled = false;
+    toast('✅ Bill download ho gayi! Browser mein open karo aur screenshot lo.');
+  } catch(e) {
+    btn.textContent = '🖼️ Save Image'; btn.disabled = false;
+    toast('Download failed — Print wala try karo', 'var(--red)');
+  }
+}
+
+function printBill() {
+  const content = document.getElementById('printable-bill').outerHTML;
+  const w = window.open('','_blank');
+  w.document.write(`<html><head><title>Bill</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
+    <style>body{font-family:Inter,sans-serif;padding:20px;}table{width:100%;border-collapse:collapse;}th{background:#f3f4f6;padding:8px;text-align:left;}td{padding:8px;border-bottom:1px solid #e5e7eb;}.pb-logo{width:46px;height:46px;background:linear-gradient(135deg,#e8a020,#c0760f);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:Syne,sans-serif;font-weight:800;font-size:17px;color:#000;}.pb-header{display:flex;align-items:center;gap:14px;border-bottom:2px solid #e8a020;padding-bottom:14px;margin-bottom:16px;}h2{color:#e8a020;font-size:18px;}.pb-total{text-align:right;margin-top:14px;font-size:16px;font-weight:700;color:#e8a020;}.pb-company-row{font-weight:700;font-size:12px;padding:6px 10px;}.pb-toyo{background:#eff6ff;color:#1d4ed8;}.pb-op{background:#faf5ff;color:#7e22ce;}</style>
+    </head><body>${content}</body></html>`);
+  w.document.close(); w.print();
+}
+
+function closeBillModal() { document.getElementById('bill-modal').classList.add('hidden'); }
+function closeBillAndClear() {
+  const btn = document.getElementById('confirm-deduct-btn');
+  if (btn) { btn.textContent='✅ Confirm & Deduct'; btn.disabled=false; btn.style.background=''; }
+  document.getElementById('bill-modal').classList.add('hidden');
+  clearBill();
+}
+function clearBill() {
+  billItems=[{company:'TOYO',code:'',qty:1}];
+  document.getElementById('cust-name').value='';
+  document.getElementById('bill-no').value='';
+  renderBillItems();
+}
+
+// PRICES
+function renderPriceCards() {
+  const prices = getPrices();
+  const container = document.getElementById('price-cards');
+  let html = '';
+  COMPANIES.forEach(company => {
+    const cc = company==='TOYO'?'toyo':'op';
+    SECTIONS.forEach(sec => {
+      const slabs = prices[company][sec];
+      let rows = slabs.map((s,i) => `
+        <div class="price-row">
+          <span class="pr-label">${s.label}</span>
+          <input class="pr-input" type="number" step="0.01" min="0.01" value="${s.rate}" id="price-${company}-${sec}-${i}" placeholder="0.00"/>
+          <span class="pr-unit">₹/inch</span>
+        </div>`).join('');
+      html += `<div class="price-card ${cc}-card">
+        <div class="company-header ${cc}">${company==='TOYO'?'🔵':'🟣'} ${company} — ${sec} Section</div>
+        ${rows}
+      </div>`;
+    });
+  });
+  container.innerHTML = html;
+  renderPriceHistory();
+}
+
+function savePrices() {
+  const prices = getPrices(); let anyError = false;
+  COMPANIES.forEach(company => {
+    SECTIONS.forEach(sec => {
+      prices[company][sec].forEach((s,i) => {
+        const el = document.getElementById(`price-${company}-${sec}-${i}`);
+        if (!el) { anyError=true; return; }
+        const val = parseFloat(el.value);
+        if (isNaN(val)||val<=0) { el.style.borderColor='var(--red)'; anyError=true; }
+        else { el.style.borderColor=''; prices[company][sec][i].rate=val; }
+      });
+    });
+  });
+  if (anyError) { toast('❌ Sahi price bharo!','var(--red)'); return; }
+  savePriceData(prices);
+  toast('✅ Sab prices save ho gayi!');
+  renderPriceHistory();
+}
+
+function renderPriceHistory() {
+  const hist = JSON.parse(localStorage.getItem('mt_price_hist_v2')||'[]');
+  const histDiv = document.getElementById('price-history-list');
+  if (!histDiv) return;
+  if (hist.length===0) { histDiv.textContent='Koi price history nahi.'; return; }
+  histDiv.innerHTML = hist.slice(0,5).map(h =>
+    `<div style="margin-bottom:8px;padding:8px;background:var(--bg);border-radius:6px;font-size:12px;">
+      <b style="color:var(--text);">${h.date}</b><br/>
+      <span style="color:#60a5fa;">TOYO</span> B:${h.prices.TOYO.B.map(s=>s.label.split('-')[0]+'=₹'+s.rate).join('|')} | C:${h.prices.TOYO.C.map(s=>s.label.split('-')[0]+'=₹'+s.rate).join('|')}<br/>
+      <span style="color:#c084fc;">OP</span> B:${h.prices.OP.B.map(s=>s.label.split('-')[0]+'=₹'+s.rate).join('|')} | C:${h.prices.OP.C.map(s=>s.label.split('-')[0]+'=₹'+s.rate).join('|')}
+    </div>`
+  ).join('');
+}
+
+// REPORT
+function generateReport() {
+  const data = getData();
+  const keys = Object.keys(data).sort();
+  const lowItems = keys.filter(k => data[k]<LOW_LIMIT);
+  const date = new Date().toLocaleDateString('en-IN',{weekday:'long',day:'2-digit',month:'long',year:'numeric'});
+
+  let lowRows = lowItems.map(code => {
+    const p = parseBelt(code);
+    return `<tr><td><b>${code}</b></td><td><span class="badge badge-${p.company}">${p.company}</span></td><td>${p.section}</td><td>${p.inch}"</td><td style="color:var(--low);font-weight:700;">${data[code]}</td><td style="color:var(--accent);">ORDER KARO</td></tr>`;
+  }).join('');
+
+  let allRows = keys.map(code => {
+    const p = parseBelt(code); if (!p) return '';
+    const qty=data[code]; const isLow=qty<LOW_LIMIT; const val=beltValue(code,qty);
+    return `<tr><td><b>${code}</b></td><td><span class="badge badge-${p.company}">${p.company}</span></td><td>${p.section}</td><td>${qty}</td><td>₹${val.toFixed(2)}</td><td><span class="badge ${isLow?'badge-low':'badge-ok'}">${isLow?'⚠️ Low':'✅ OK'}</span></td></tr>`;
+  }).join('');
+
+  const totalVal = keys.reduce((s,k) => s+beltValue(k,data[k]),0);
+  document.getElementById('weekly-report-content').innerHTML = `
+    <div style="border-bottom:1px solid var(--border);padding-bottom:14px;margin-bottom:16px;">
+      <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;">📋 Weekly Stock Report</div>
+      <div style="font-size:12px;color:var(--muted);">Musaddique Traders — ${date}</div>
+    </div>
+    <div class="report-section">
+      <h3>⚠️ Low Stock / Order List</h3>
+      ${lowItems.length===0
+        ? '<p style="color:var(--green);font-size:13px;">✅ Sab stock theek hai!</p>'
+        : `<div class="table-wrap"><table><thead><tr><th>Code</th><th>Company</th><th>Section</th><th>Size</th><th>Qty</th><th>Action</th></tr></thead><tbody>${lowRows}</tbody></table></div>`}
+    </div>
+    <div class="report-section">
+      <h3>📦 Full Stock Summary</h3>
+      <div class="table-wrap"><table><thead><tr><th>Code</th><th>Company</th><th>Section</th><th>Qty</th><th>Value</th><th>Status</th></tr></thead>
+      <tbody>${allRows||'<tr><td colspan="6" style="text-align:center;padding:16px;color:var(--muted);">Koi stock nahi</td></tr>'}</tbody></table></div>
+    </div>
+    <div style="background:var(--bg);border:1px solid var(--accent);border-radius:10px;padding:14px;margin-top:14px;display:flex;justify-content:space-between;align-items:center;">
+      <div><div style="font-size:12px;color:var(--muted);">Total Stock Value</div><div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--accent);">₹${totalVal.toFixed(2)}</div></div>
+      <div style="text-align:right;"><div style="font-size:12px;color:var(--muted);">Low Items</div><div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:${lowItems.length>0?'var(--low)':'var(--green)'};">${lowItems.length}</div></div>
+    </div>`;
+}
+
+// HISTORY
+function getHistory() { return JSON.parse(localStorage.getItem('mt_history_v1') || '[]'); }
+function saveHistory(h) { localStorage.setItem('mt_history_v1', JSON.stringify(h)); }
+
+function renderHistory() {
+  const hist = getHistory();
+  const search = (document.getElementById('hist-search')?.value||'').toLowerCase();
+  const company = document.getElementById('hist-company')?.value||'';
+  const from = document.getElementById('hist-from')?.value||'';
+  const to = document.getElementById('hist-to')?.value||'';
+
+  let filtered = hist.filter(r => {
+    if (search && !r.customer.toLowerCase().includes(search) && !r.beltCode.toLowerCase().includes(search) && !r.billNo.toLowerCase().includes(search)) return false;
+    if (company && r.company !== company) return false;
+    if (from && r.dateISO < from) return false;
+    if (to && r.dateISO > to) return false;
+    return true;
+  });
+
+  const tbody = document.getElementById('history-table');
+  const empty = document.getElementById('hist-empty');
+
+  if (filtered.length === 0) {
+    tbody.innerHTML = '';
+    empty.style.display = 'block';
+    document.getElementById('hist-summary-card').style.display = 'none';
+    return;
+  }
+  empty.style.display = 'none';
+
+  // Summary
+  const totalAmt = filtered.reduce((s,r) => s+r.amount, 0);
+  const totalQty = filtered.reduce((s,r) => s+r.qty, 0);
+  const toyoAmt = filtered.filter(r=>r.company==='TOYO').reduce((s,r)=>s+r.amount,0);
+  const opAmt = filtered.filter(r=>r.company==='OP').reduce((s,r)=>s+r.amount,0);
+  document.getElementById('hist-summary-card').style.display='block';
+  document.getElementById('hist-summary').innerHTML = `
+    <div class="stat-card gold" style="min-width:120px;padding:12px;"><div class="label">Total Sales</div><div class="value" style="font-size:16px;">₹${totalAmt.toFixed(0)}</div></div>
+    <div class="stat-card ok" style="min-width:120px;padding:12px;"><div class="label">Total Qty</div><div class="value" style="font-size:16px;">${totalQty}</div></div>
+    <div class="stat-card blue" style="min-width:120px;padding:12px;"><div class="label">TOYO Sales</div><div class="value" style="font-size:16px;">₹${toyoAmt.toFixed(0)}</div></div>
+    <div class="stat-card purple" style="min-width:120px;padding:12px;"><div class="label">OP Sales</div><div class="value" style="font-size:16px;">₹${opAmt.toFixed(0)}</div></div>
+    <div class="stat-card gold" style="min-width:120px;padding:12px;"><div class="label">Records</div><div class="value" style="font-size:16px;">${filtered.length}</div></div>
+  `;
+
+  tbody.innerHTML = filtered.map(r => `<tr>
+    <td><div style="font-weight:600;font-size:13px;">${r.date}</div><div style="font-size:11px;color:var(--muted);">${r.time}</div></td>
+    <td style="font-size:12px;color:var(--accent);">${r.billNo||'—'}</td>
+    <td><b>${r.customer}</b></td>
+    <td><b>${r.beltCode}</b></td>
+    <td><span class="badge badge-${r.company}">${r.company}</span></td>
+    <td><span class="badge badge-${r.section}">${r.section}</span></td>
+    <td>${r.inch}"</td>
+    <td style="font-weight:700;">${r.qty}</td>
+    <td style="color:var(--green);font-weight:700;">₹${r.amount.toFixed(2)}</td>
+  </tr>`).join('');
+}
+
+function clearHistoryFilter() {
+  document.getElementById('hist-search').value='';
+  document.getElementById('hist-company').value='';
+  document.getElementById('hist-from').value='';
+  document.getElementById('hist-to').value='';
+  renderHistory();
+}
+
+function clearAllHistory() {
+  if (!confirm('Poori history delete karni hai? Yeh wapas nahi aayegi!')) return;
+  localStorage.removeItem('mt_history_v1');
+  renderHistory();
+  toast('History clear ho gayi','var(--low)');
+}
+
+// ===== PURCHASE =====
+function getSuppliers() { return JSON.parse(localStorage.getItem('mt_suppliers_v1') || '[]'); }
+function saveSuppliers(s) { localStorage.setItem('mt_suppliers_v1', JSON.stringify(s)); }
+function getPurchases() { return JSON.parse(localStorage.getItem('mt_purchases_v1') || '[]'); }
+function savePurchases(p) { localStorage.setItem('mt_purchases_v1', JSON.stringify(p)); }
+
+let currentSupId = null;
+let purItems = [{company:'TOYO', section:'B', inch:'', qty:'', purchaseRate:''}];
+
+function addSupplier() {
+  const name = document.getElementById('sup-name').value.trim();
+  const city = document.getElementById('sup-city').value.trim();
+  const phone = document.getElementById('sup-phone').value.trim();
+  const note = document.getElementById('sup-note').value.trim();
+  const defrate = parseFloat(document.getElementById('sup-defrate').value) || 0;
+  if (!name) { toast('Supplier naam zaroor bharo!', 'var(--red)'); return; }
+  const suppliers = getSuppliers();
+  suppliers.unshift({ id: Date.now(), name, city, phone, note, defrate, addedOn: new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}) });
+  saveSuppliers(suppliers);
+  document.getElementById('sup-name').value='';
+  document.getElementById('sup-city').value='';
+  document.getElementById('sup-phone').value='';
+  document.getElementById('sup-defrate').value='';
+  document.getElementById('sup-note').value='';
+  renderSuppliers();
+  toast('✅ Supplier save ho gaya!');
+}
+
+function deleteSupplier(id, confirmed) {
+  if (!confirmed) {
+    const btn = document.querySelector(`[data-del-sup="${id}"]`);
+    if (btn) {
+      btn.textContent = '⚠️ Pakka delete?';
+      btn.style.background = '#ff6b35';
+      btn.onclick = function(e) { e.stopPropagation(); deleteSupplier(id, true); };
+      setTimeout(() => {
+        if (btn) { btn.textContent = 'Delete'; btn.style.background=''; btn.onclick = function(e){e.stopPropagation();deleteSupplier(id,false);}; }
+      }, 3000);
+    }
+    return;
+  }
+  saveSuppliers(getSuppliers().filter(s => s.id !== id));
+  renderSuppliers();
+  toast('Supplier hata diya', 'var(--low)');
+}
+
+function getSupplierPayments() { return JSON.parse(localStorage.getItem('mt_sup_payments_v1') || '[]'); }
+function saveSupplierPayments(p) { localStorage.setItem('mt_sup_payments_v1', JSON.stringify(p)); }
+
+function renderSuppliers() {
+  const suppliers = getSuppliers();
+  const purchases = getPurchases();
+  const allPayments = getSupplierPayments();
+  const container = document.getElementById('suppliers-list');
+  if (!container) return;
+  if (suppliers.length === 0) {
+    container.innerHTML = `<div class="card" style="text-align:center;padding:30px;color:var(--muted);">📭 Koi supplier nahi. Upar se add karo.</div>`;
+    return;
+  }
+  container.innerHTML = suppliers.map(s => {
+    const myPurch = purchases.filter(p => p.supplierId === s.id);
+    const totalQty = myPurch.reduce((sum,p) => sum + p.items.reduce((a,i)=>a+i.qty,0), 0);
+    const totalKharid = myPurch.reduce((sum,p) => sum + (p.grandTotal || p.items.reduce((a,i)=>a+(i.totalCost||0),0)), 0);
+    const totalPaid = allPayments.filter(p => String(p.supplierId) === String(s.id)).reduce((sum,p) => sum+(p.amount||0), 0);
+    const baqi = totalKharid - totalPaid;
+    const lastPurch = myPurch[0];
+    return `
+    <div class="sup-card" onclick="openSupplier(${s.id})">
+      <div class="sup-card-top">
+        <div>
+          <div class="sup-name">🏭 ${s.name}</div>
+          ${s.city?`<div class="sup-city">📍 ${s.city}</div>`:''}
+          ${s.phone?`<div class="sup-phone">📞 ${s.phone}</div>`:''}
+          ${s.note?`<div style="font-size:11px;color:var(--muted);margin-top:3px;">📝 ${s.note}</div>`:''}
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end;">
+          ${s.phone?`<a href="tel:${s.phone}" onclick="event.stopPropagation()" class="btn btn-outline" style="padding:6px 12px;font-size:12px;text-decoration:none;">📞 Call</a>`:''}
+          <button class="btn btn-danger" style="padding:6px 12px;font-size:11px;" onclick="event.stopPropagation();deleteSupplier(${s.id})">Delete</button>
+        </div>
+      </div>
+      <div class="sup-stats">
+        <div class="sup-stat"><span>Total Purchases: </span><b>${myPurch.length}</b></div>
+        <div class="sup-stat"><span>Total Belts: </span><b>${totalQty}</b></div>
+        <div class="sup-stat" style="border:1px solid rgba(232,160,32,0.4);background:rgba(232,160,32,0.1);">
+          <span>🧾 Kharid: </span><b style="color:var(--accent);">₹${totalKharid.toFixed(2)}</b>
+        </div>
+        <div class="sup-stat" style="border:1px solid rgba(59,130,246,0.3);background:rgba(59,130,246,0.08);">
+          <span>✅ Diya: </span><b style="color:#60a5fa;">₹${totalPaid.toFixed(2)}</b>
+        </div>
+        <div class="sup-stat" style="border:1px solid ${baqi>0?'rgba(239,68,68,0.5)':'rgba(34,197,94,0.3)'};background:${baqi>0?'rgba(239,68,68,0.12)':'rgba(34,197,94,0.08)'};">
+          <span>⏳ Baqi: </span><b style="color:${baqi>0?'#f87171':'var(--green)'};">₹${baqi.toFixed(2)}</b>
+        </div>
+        ${lastPurch ? `<div class="sup-stat"><span>Last Purchase: </span><b>${lastPurch.date}</b></div>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openSupplier(supId) {
+  currentSupId = supId;
+  const suppliers = getSuppliers();
+  const sup = suppliers.find(s => s.id === supId);
+  if (!sup) return;
+  const defrate = sup.defrate || '';
+  purItems = [{company:'TOYO', section:'B', inch:'', qty:'', purchaseRate: defrate}];
+
+  document.getElementById('sup-modal-title').textContent = '🏭 ' + sup.name;
+  document.getElementById('sup-modal-info').innerHTML = `
+    <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:center;justify-content:space-between;">
+      <div>
+        <div style="font-size:16px;font-weight:800;">${sup.name}${sup.city?` <span style="font-size:13px;color:var(--muted);">📍 ${sup.city}</span>`:''}</div>
+        ${sup.phone?`<a href="tel:${sup.phone}" style="color:var(--accent);font-weight:700;font-size:14px;text-decoration:none;">📞 ${sup.phone}</a>`:''}
+        ${sup.note?`<div style="color:var(--muted);font-size:12px;margin-top:3px;">📝 ${sup.note}</div>`:''}
+      </div>
+      <div style="background:rgba(168,85,247,0.1);border:1px solid rgba(168,85,247,0.3);border-radius:10px;padding:10px 14px;min-width:170px;">
+        <div style="font-size:11px;color:var(--op);font-weight:700;margin-bottom:6px;">⚡ DEFAULT KHARID RATE</div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <input type="number" id="sup-defrate-edit" value="${sup.defrate||''}" placeholder="₹/inch" step="0.01" min="0"
+            style="width:90px;font-size:16px;font-weight:800;border-color:var(--op)!important;padding:6px 10px;"/>
+          <span style="font-size:12px;color:var(--muted);">₹/inch</span>
+          <button class="btn btn-primary" style="padding:6px 12px;font-size:12px;" onclick="saveDefaultRate(${sup.id})">💾</button>
+        </div>
+        <div style="font-size:11px;color:var(--muted);margin-top:4px;">Naye belt me auto fill hoga</div>
+      </div>
+    </div>`;
+
+  // Set today's date
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('pur-date').value = today;
+  document.getElementById('pur-note-entry').value = '';
+  document.getElementById('sup-pay-date').value = today;
+  document.getElementById('sup-pay-amount').value = '';
+  document.getElementById('sup-pay-note').value = '';
+
+  // Payment summary
+  const allSupPayments = getSupplierPayments().filter(p => String(p.supplierId) === String(supId));
+  const myPurch = getPurchases().filter(p => p.supplierId === supId);
+  const totalKharid = myPurch.reduce((sum,p) => sum+(p.grandTotal||p.items.reduce((a,i)=>a+(i.totalCost||0),0)), 0);
+  const totalPaid = allSupPayments.reduce((sum,p) => sum+(p.amount||0), 0);
+  const baqi = totalKharid - totalPaid;
+
+  document.getElementById('sup-payment-summary').innerHTML =
+    '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">' +
+      '<div style="background:rgba(232,160,32,0.1);border:1px solid rgba(232,160,32,0.4);border-radius:10px;padding:12px;text-align:center;">' +
+        '<div style="font-size:11px;color:var(--muted);">🧾 Total Kharid</div>' +
+        '<div style="font-family:Syne,sans-serif;font-size:20px;font-weight:800;color:var(--accent);">₹' + totalKharid.toFixed(2) + '</div>' +
+      '</div>' +
+      '<div style="background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.3);border-radius:10px;padding:12px;text-align:center;">' +
+        '<div style="font-size:11px;color:var(--muted);">✅ Diya</div>' +
+        '<div style="font-family:Syne,sans-serif;font-size:20px;font-weight:800;color:#60a5fa;">₹' + totalPaid.toFixed(2) + '</div>' +
+      '</div>' +
+      '<div style="background:' + (baqi>0?'rgba(239,68,68,0.1)':'rgba(34,197,94,0.1)') + ';border:1px solid ' + (baqi>0?'rgba(239,68,68,0.4)':'rgba(34,197,94,0.3)') + ';border-radius:10px;padding:12px;text-align:center;">' +
+        '<div style="font-size:11px;color:var(--muted);">⏳ Baqi</div>' +
+        '<div style="font-family:Syne,sans-serif;font-size:20px;font-weight:800;color:' + (baqi>0?'#f87171':'var(--green)') + ';">₹' + baqi.toFixed(2) + '</div>' +
+      '</div>' +
+    '</div>';
+
+  // Payment history
+  const payHistEl = document.getElementById('sup-payment-history');
+  if (allSupPayments.length === 0) {
+    payHistEl.innerHTML = '<div style="text-align:center;padding:14px;color:var(--muted);font-size:13px;">Abhi tak koi payment nahi</div>';
+  } else {
+    payHistEl.innerHTML = allSupPayments.map(p =>
+      '<div style="background:var(--bg);border:1px solid rgba(59,130,246,0.3);border-radius:8px;padding:10px 14px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;">' +
+        '<div><div style="font-weight:700;color:#60a5fa;">₹' + p.amount.toFixed(2) + '</div>' +
+        '<div style="font-size:12px;color:var(--muted);">' + p.date + (p.note ? ' — ' + p.note : '') + '</div></div>' +
+        '<button onclick="deleteSupplierPayment(' + p.id + ',' + supId + ')" style="background:none;border:none;color:var(--muted);font-size:16px;cursor:pointer;">✕</button>' +
+      '</div>'
+    ).join('');
+  }
+
+  renderPurItems();
+  renderSupPurchaseHistory(supId);
+  document.getElementById('sup-modal').classList.remove('hidden');
+}
+
+function toggleSection(bodyId) {
+  const body = document.getElementById(bodyId);
+  if (!body) return;
+  const isOpen = body.style.display !== 'none';
+  body.style.display = isOpen ? 'none' : 'block';
+  // Update arrow
+  const arrowId = bodyId.replace('-body', '-arrow');
+  const arrow = document.getElementById(arrowId);
+  if (arrow) arrow.textContent = isOpen ? '▼' : '▲';
+}
+
+function saveSupplierPayment() {
+  const amount = parseFloat(document.getElementById('sup-pay-amount').value);
+  const dateVal = document.getElementById('sup-pay-date').value;
+  const note = document.getElementById('sup-pay-note').value.trim();
+  if (!amount || amount <= 0) { toast('Amount sahi bharo!','var(--red)'); return; }
+  if (!dateVal) { toast('Tareekh select karo!','var(--red)'); return; }
+  const payments = getSupplierPayments();
+  payments.unshift({
+    id: Date.now(),
+    supplierId: currentSupId,
+    amount: amount,
+    date: new Date(dateVal).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}),
+    dateISO: dateVal,
+    note: note
+  });
+  saveSupplierPayments(payments);
+  openSupplier(currentSupId);
+  renderSuppliers();
+  toast('✅ Payment save ho gayi!');
+}
+
+function deleteSupplierPayment(payId, supId) {
+  saveSupplierPayments(getSupplierPayments().filter(p => p.id !== payId));
+  openSupplier(supId);
+  renderSuppliers();
+  toast('Payment hata di', 'var(--low)');
+}
+
+function renderPurItems() {
+  const c = document.getElementById('pur-items-container');
+  if (!c) return;
+
+  let html = '';
+  purItems.forEach((item, i) => {
+    html += `
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:12px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <div style="font-size:12px;font-weight:700;color:var(--muted);">Belt #${i+1}</div>
+        <button class="btn btn-danger" style="padding:5px 12px;font-size:12px;" onclick="removePurItem(${i})">✕ Hatao</button>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+        <div>
+          <div style="font-size:11px;color:var(--muted);margin-bottom:4px;font-weight:600;">COMPANY</div>
+          <select style="width:100%;font-weight:700;font-size:14px;" onchange="purItems[${i}].company=this.value;">
+            <option value="TOYO" ${item.company==='TOYO'?'selected':''}>🔵 TOYO</option>
+            <option value="OP" ${item.company==='OP'?'selected':''}>🟣 OP</option>
+          </select>
+        </div>
+        <div>
+          <div style="font-size:11px;color:var(--muted);margin-bottom:4px;font-weight:600;">SECTION</div>
+          <select style="width:100%;font-weight:700;font-size:14px;" onchange="purItems[${i}].section=this.value;">
+            <option value="B" ${item.section==='B'?'selected':''}>B Section</option>
+            <option value="C" ${item.section==='C'?'selected':''}>C Section</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+        <div>
+          <div style="font-size:11px;color:var(--muted);margin-bottom:4px;font-weight:600;">SIZE (INCH)</div>
+          <input type="number" placeholder="Jaise 132" value="${item.inch||''}" min="1"
+            style="width:100%;font-size:14px;"
+            oninput="purItems[${i}].inch=this.value;updatePurSubtotal(${i})"/>
+        </div>
+        <div>
+          <div style="font-size:11px;color:var(--muted);margin-bottom:4px;font-weight:600;">QUANTITY</div>
+          <input type="number" placeholder="Kitne belt" value="${item.qty||''}" min="1"
+            style="width:100%;font-size:14px;"
+            oninput="purItems[${i}].qty=this.value;updatePurSubtotal(${i})"/>
+        </div>
+      </div>
+
+      <div>
+        <div style="font-size:11px;color:var(--op);margin-bottom:4px;font-weight:700;">KHARID RATE (₹ per inch)</div>
+        <input type="number" placeholder="Jaise 2.50" value="${item.purchaseRate||''}" min="0" step="0.01"
+          style="width:100%;font-size:15px;font-weight:700;border-color:var(--op)!important;"
+          oninput="purItems[${i}].purchaseRate=this.value;updatePurSubtotal(${i})"/>
+      </div>
+
+      <div id="pur-subtotal-${i}" style="margin-top:10px;display:none;background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3);border-radius:8px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-size:12px;color:var(--muted);">Is belt ka total cost</span>
+        <span id="pur-subtotal-val-${i}" style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--green);">₹0</span>
+      </div>
+    </div>`;
+  });
+
+  html += `<div id="pur-grand-total" style="display:none;background:var(--bg);border:2px solid var(--accent);border-radius:10px;padding:14px;display:flex;justify-content:space-between;align-items:center;margin-top:4px;">
+    <span style="font-size:13px;color:var(--muted);font-weight:600;">Grand Total Purchase Cost</span>
+    <span id="pur-grand-val" style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--accent);">₹0</span>
+  </div>`;
+
+  c.innerHTML = html;
+
+  // Show existing subtotals on render
+  purItems.forEach((item, i) => updatePurSubtotal(i));
+}
+
+function updatePurSubtotal(i) {
+  const item = purItems[i];
+  const inch = parseFloat(item.inch) || 0;
+  const qty = parseFloat(item.qty) || 0;
+  const rate = parseFloat(item.purchaseRate) || 0;
+  const sub = rate * inch * qty;
+
+  const subEl = document.getElementById('pur-subtotal-' + i);
+  const valEl = document.getElementById('pur-subtotal-val-' + i);
+  if (subEl && valEl) {
+    if (sub > 0) {
+      subEl.style.display = 'flex';
+      valEl.textContent = '₹' + sub.toFixed(2);
+    } else {
+      subEl.style.display = 'none';
+    }
+  }
+
+  // Update grand total
+  let grand = 0;
+  purItems.forEach((it, idx) => {
+    grand += (parseFloat(it.purchaseRate)||0) * (parseFloat(it.inch)||0) * (parseFloat(it.qty)||0);
+  });
+  const grandEl = document.getElementById('pur-grand-total');
+  const grandVal = document.getElementById('pur-grand-val');
+  if (grandEl && grandVal) {
+    if (grand > 0) {
+      grandEl.style.display = 'flex';
+      grandVal.textContent = '₹' + grand.toFixed(2);
+    } else {
+      grandEl.style.display = 'none';
+    }
+  }
+}
+
+function addPurItem() {
+  const suppliers = getSuppliers();
+  const sup = suppliers.find(s => s.id === currentSupId);
+  const defrate = sup ? (sup.defrate || '') : '';
+  purItems.push({company:'TOYO', section:'B', inch:'', qty:'', purchaseRate: defrate});
+  renderPurItems();
+}
+
+function saveDefaultRate(supId) {
+  const val = parseFloat(document.getElementById('sup-defrate-edit').value) || 0;
+  const suppliers = getSuppliers();
+  const idx = suppliers.findIndex(s => s.id === supId);
+  if (idx === -1) return;
+  suppliers[idx].defrate = val;
+  saveSuppliers(suppliers);
+  purItems.forEach(item => { item.purchaseRate = val; });
+  renderPurItems();
+  renderSuppliers();
+  toast(`✅ Default rate ₹${val}/inch save + sab belts update!`);
+}
+
+function removePurItem(i) {
+  purItems.splice(i,1);
+  if (purItems.length===0) {
+    const suppliers = getSuppliers();
+    const sup = suppliers.find(s => s.id === currentSupId);
+    const defrate = sup ? (sup.defrate || '') : '';
+    purItems=[{company:'TOYO',section:'B',inch:'',qty:'',purchaseRate:defrate}];
+  }
+  renderPurItems();
+}
+
+function savePurchaseEntry() {
+  const dateVal = document.getElementById('pur-date').value;
+  const noteVal = document.getElementById('pur-note-entry').value.trim();
+  if (!dateVal) { toast('Tareekh select karo!','var(--red)'); return; }
+
+  const validItems = purItems.filter(i => i.inch && i.qty && parseInt(i.qty)>0 && parseInt(i.inch)>0);
+  if (validItems.length===0) { toast('Kam se kam ek belt add karo!','var(--red)'); return; }
+
+  // Build items with belt codes + purchase rate
+  const entryItems = validItems.map(i => {
+    const rate = parseFloat(i.purchaseRate)||0;
+    const qty = parseInt(i.qty);
+    const inch = parseInt(i.inch);
+    return {
+      beltCode: i.company+'-'+i.section+i.inch,
+      company: i.company,
+      section: i.section,
+      inch: inch,
+      qty: qty,
+      purchaseRate: rate,
+      totalCost: rate > 0 ? rate * inch * qty : 0
+    };
+  });
+
+  const grandTotal = entryItems.reduce((s,i) => s+i.totalCost, 0);
+
+  // Save purchase record
+  const purchases = getPurchases();
+  const dateObj = new Date(dateVal);
+  purchases.unshift({
+    id: Date.now(),
+    supplierId: currentSupId,
+    date: dateObj.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}),
+    dateISO: dateVal,
+    note: noteVal,
+    grandTotal: grandTotal,
+    items: entryItems
+  });
+  savePurchases(purchases);
+
+  // Auto-add to stock
+  const stockData = getData();
+  entryItems.forEach(item => {
+    stockData[item.beltCode] = (stockData[item.beltCode]||0) + item.qty;
+  });
+  saveData(stockData);
+
+  // Reset form
+  purItems = [{company:'TOYO', section:'B', inch:'', qty:'', purchaseRate:''}];
+  renderPurItems();
+  document.getElementById('pur-note-entry').value='';
+
+  // Refresh history in modal
+  renderSupPurchaseHistory(currentSupId);
+  renderSuppliers();
+
+  const costMsg = grandTotal > 0 ? ` | Cost: ₹${grandTotal.toFixed(2)}` : '';
+  toast(`✅ ${entryItems.length} belt(s) save + stock add!${costMsg}`);
+}
+
+function renderSupPurchaseHistory(supId) {
+  const purchases = getPurchases().filter(p => p.supplierId === supId);
+  const container = document.getElementById('sup-purchase-history');
+  if (!container) return;
+  if (purchases.length===0) {
+    container.innerHTML = `<div style="text-align:center;padding:20px;color:var(--muted);font-size:13px;">📭 Abhi tak koi purchase nahi</div>`;
+    return;
+  }
+  container.innerHTML = purchases.map(p => {
+    const totalQty = p.items.reduce((s,i)=>s+i.qty,0);
+    const grandTotal = p.grandTotal || p.items.reduce((s,i)=>s+(i.totalCost||0),0);
+    const rows = p.items.map(i => {
+      const rate = i.purchaseRate || 0;
+      const cost = i.totalCost || 0;
+      return `<tr>
+        <td><b>${i.beltCode}</b></td>
+        <td><span class="badge badge-${i.company}">${i.company}</span></td>
+        <td><span class="badge badge-${i.section}">${i.section}</span></td>
+        <td>${i.inch}"</td>
+        <td style="font-weight:700;color:var(--green);">${i.qty}</td>
+        <td style="color:var(--op);font-weight:600;">${rate>0?'₹'+rate+'/in':'—'}</td>
+        <td style="color:var(--accent);font-weight:700;">${cost>0?'₹'+cost.toFixed(2):'—'}</td>
+      </tr>`;
+    }).join('');
+    return `
+    <div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:12px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px;">
+        <div>
+          <div style="font-weight:700;color:var(--accent);font-size:14px;">📅 ${p.date}</div>
+          ${p.note?`<div style="font-size:12px;color:var(--muted);">📝 ${p.note}</div>`:''}
+        </div>
+        <div style="display:flex;gap:14px;align-items:center;">
+          <div style="text-align:right;">
+            <div style="font-size:11px;color:var(--muted);">Total Belts</div>
+            <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--green);">${totalQty}</div>
+          </div>
+          ${grandTotal>0?`<div style="text-align:right;">
+            <div style="font-size:11px;color:var(--muted);">Total Cost</div>
+            <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--accent);">₹${grandTotal.toFixed(2)}</div>
+          </div>`:''}
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Belt Code</th><th>Company</th><th>Section</th><th>Size</th><th>Qty</th><th>Kharid Rate</th><th>Total Cost</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ===== SELLERS =====
+function getSellers() { return JSON.parse(localStorage.getItem('mt_sellers_v1') || '[]'); }
+function saveSellers(s) { localStorage.setItem('mt_sellers_v1', JSON.stringify(s)); }
+function getSellerBills() { return JSON.parse(localStorage.getItem('mt_seller_bills_v1') || '[]'); }
+function saveSellerBills(b) { localStorage.setItem('mt_seller_bills_v1', JSON.stringify(b)); }
+
+function addSeller() {
+  const name = document.getElementById('sel-name').value.trim();
+  const city = document.getElementById('sel-city').value.trim();
+  const phone = document.getElementById('sel-phone').value.trim();
+  const note = document.getElementById('sel-note').value.trim();
+  if (!name) { toast('Seller naam zaroor bharo!', 'var(--red)'); return; }
+  const sellers = getSellers();
+  sellers.unshift({ id: Date.now(), name, city, phone, note, addedOn: new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}) });
+  saveSellers(sellers);
+  document.getElementById('sel-name').value='';
+  document.getElementById('sel-city').value='';
+  document.getElementById('sel-phone').value='';
+  document.getElementById('sel-note').value='';
+  renderSellers();
+  populateSellerDropdown();
+  toast('✅ Seller save ho gaya!');
+}
+
+function deleteSeller(id) {
+  if (!confirm('Is seller ko delete karo? Uski saari bill history bhi hat jayegi.')) return;
+  saveSellers(getSellers().filter(s => s.id !== id));
+  const bills = getSellerBills().filter(b => b.sellerId !== id);
+  saveSellerBills(bills);
+  renderSellers();
+  populateSellerDropdown();
+  toast('Seller hata diya', 'var(--low)');
+}
+
+function populateSellerDropdown() {
+  const sel = document.getElementById('seller-select');
+  if (!sel) return;
+  const sellers = getSellers();
+  const cur = sel.value;
+  sel.innerHTML = '<option value="">-- Walk-in / Naya Customer --</option>';
+  sellers.forEach(s => {
+    const opt = document.createElement('option');
+    opt.value = s.id;
+    opt.textContent = s.name + (s.city ? ' — ' + s.city : '');
+    sel.appendChild(opt);
+  });
+  sel.value = cur;
+}
+
+function onSellerSelect() {
+  const selId = parseInt(document.getElementById('seller-select').value);
+  if (!selId) { document.getElementById('cust-name').value = ''; return; }
+  const sellers = getSellers();
+  const s = sellers.find(x => x.id === selId);
+  if (s) document.getElementById('cust-name').value = s.name;
+}
+
+function getSellerPayments() { return JSON.parse(localStorage.getItem('mt_seller_payments_v1') || '[]'); }
+function saveSellerPayments(p) { localStorage.setItem('mt_seller_payments_v1', JSON.stringify(p)); }
+
+function renderSellers() {
+  const sellers = getSellers();
+  const allBills = getSellerBills();
+  const allPayments = getSellerPayments();
+  const container = document.getElementById('sellers-list');
+  if (!container) return;
+  if (sellers.length === 0) {
+    container.innerHTML = '<div class="card" style="text-align:center;padding:30px;color:var(--muted);">📭 Koi seller nahi. Upar se add karo.</div>';
+    return;
+  }
+  container.innerHTML = sellers.map(s => {
+    const myBills = allBills.filter(b => String(b.sellerId) === String(s.id));
+    const totalSale = myBills.reduce((sum,b) => sum+(b.totalAmount||0), 0);
+    const totalPaid = allPayments.filter(p => String(p.sellerId) === String(s.id)).reduce((sum,p) => sum+(p.amount||0), 0);
+    const baqi = totalSale - totalPaid;
+    const lastBill = myBills[0];
+    return '<div class="sup-card">' +
+      '<div class="sup-card-top" onclick="openSeller('+s.id+')" style="cursor:pointer;">' +
+        '<div>' +
+          '<div class="sup-name">🤝 ' + s.name + '</div>' +
+          (s.city ? '<div class="sup-city">📍 ' + s.city + '</div>' : '') +
+          (s.phone ? '<div class="sup-phone">📞 ' + s.phone + '</div>' : '') +
+          (s.note ? '<div style="font-size:11px;color:var(--muted);margin-top:3px;">📝 ' + s.note + '</div>' : '') +
+        '</div>' +
+        '<div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end;">' +
+          (s.phone ? '<a href="tel:' + s.phone + '" onclick="event.stopPropagation()" class="btn btn-outline" style="padding:6px 12px;font-size:12px;text-decoration:none;">📞 Call</a>' : '') +
+        '</div>' +
+      '</div>' +
+      '<div class="sup-stats" onclick="openSeller('+s.id+')" style="cursor:pointer;">' +
+        '<div class="sup-stat"><span>Total Bills: </span><b>' + myBills.length + '</b></div>' +
+        '<div class="sup-stat" style="border:1px solid rgba(34,197,94,0.3);background:rgba(34,197,94,0.08);"><span>💰 Total Sale: </span><b style="color:var(--green);">₹' + totalSale.toFixed(2) + '</b></div>' +
+        '<div class="sup-stat" style="border:1px solid rgba(59,130,246,0.3);background:rgba(59,130,246,0.08);"><span>✅ Diya: </span><b style="color:#60a5fa;">₹' + totalPaid.toFixed(2) + '</b></div>' +
+        '<div class="sup-stat" style="border:1px solid ' + (baqi>0?'rgba(239,68,68,0.5)':'rgba(34,197,94,0.3)') + ';background:' + (baqi>0?'rgba(239,68,68,0.12)':'rgba(34,197,94,0.08)') + ';"><span>⏳ Baqi: </span><b style="color:' + (baqi>0?'#f87171':'var(--green)') + ';">₹' + baqi.toFixed(2) + '</b></div>' +
+        (lastBill ? '<div class="sup-stat"><span>Last Bill: </span><b>' + lastBill.date + '</b></div>' : '') +
+      '</div>' +
+      '<div style="margin-top:10px;text-align:right;" id="del-row-' + s.id + '">' +
+        '<button class="btn btn-danger" style="padding:7px 16px;font-size:12px;" onclick="sellerDeleteStep1(' + s.id + ')">🗑️ Delete</button>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function saveSellerPayment() {
+  const selId = document.getElementById('sel-current-id') ? parseInt(document.getElementById('sel-current-id').value) : null;
+  if (!selId) { toast('Seller ID nahi mila!','var(--red)'); return; }
+  const amount = parseFloat(document.getElementById('pay-amount').value);
+  const dateVal = document.getElementById('pay-date').value;
+  const note = document.getElementById('pay-note').value.trim();
+  if (!amount || amount <= 0) { toast('Amount sahi bharo!','var(--red)'); return; }
+  if (!dateVal) { toast('Tareekh select karo!','var(--red)'); return; }
+  const payments = getSellerPayments();
+  payments.unshift({
+    id: Date.now(),
+    sellerId: selId,
+    amount: amount,
+    date: new Date(dateVal).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}),
+    dateISO: dateVal,
+    note: note
+  });
+  saveSellerPayments(payments);
+  document.getElementById('pay-amount').value = '';
+  document.getElementById('pay-note').value = '';
+  openSeller(selId);
+  renderSellers();
+  toast('✅ Payment save ho gayi!');
+}
+
+function openSeller(selId) {
+  const sellers = getSellers();
+  const s = sellers.find(x => x.id === selId);
+  if (!s) return;
+
+  // Store current seller id for payment save
+  let hiddenEl = document.getElementById('sel-current-id');
+  if (!hiddenEl) {
+    hiddenEl = document.createElement('input');
+    hiddenEl.type = 'hidden';
+    hiddenEl.id = 'sel-current-id';
+    document.body.appendChild(hiddenEl);
+  }
+  hiddenEl.value = selId;
+
+  // Set today date in payment form
+  document.getElementById('pay-date').value = new Date().toISOString().split('T')[0];
+  document.getElementById('pay-amount').value = '';
+  document.getElementById('pay-note').value = '';
+
+  document.getElementById('sel-modal-title').textContent = '🤝 ' + s.name;
+  document.getElementById('sel-modal-info').innerHTML =
+    '<div style="display:flex;gap:16px;flex-wrap:wrap;align-items:center;">' +
+      '<div>' +
+        '<div style="font-size:16px;font-weight:800;">' + s.name + (s.city ? ' <span style="font-size:13px;color:var(--muted);">📍 ' + s.city + '</span>' : '') + '</div>' +
+        (s.phone ? '<a href="tel:' + s.phone + '" style="color:var(--accent);font-weight:700;font-size:14px;text-decoration:none;display:block;margin-top:4px;">📞 ' + s.phone + '</a>' : '') +
+        (s.note ? '<div style="color:var(--muted);font-size:12px;margin-top:3px;">📝 ' + s.note + '</div>' : '') +
+      '</div>' +
+    '</div>';
+
+  // Payment summary
+  const allPayments = getSellerPayments().filter(p => String(p.sellerId) === String(selId));
+  const allBills = getSellerBills().filter(b => String(b.sellerId) === String(selId));
+  const totalSale = allBills.reduce((sum,b) => sum+(b.totalAmount||0), 0);
+  const totalPaid = allPayments.reduce((sum,p) => sum+(p.amount||0), 0);
+  const baqi = totalSale - totalPaid;
+
+  document.getElementById('sel-payment-summary').innerHTML =
+    '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">' +
+      '<div style="background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3);border-radius:10px;padding:12px;text-align:center;">' +
+        '<div style="font-size:11px;color:var(--muted);">💰 Total Sale</div>' +
+        '<div style="font-family:Syne,sans-serif;font-size:20px;font-weight:800;color:var(--green);">₹' + totalSale.toFixed(2) + '</div>' +
+      '</div>' +
+      '<div style="background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.3);border-radius:10px;padding:12px;text-align:center;">' +
+        '<div style="font-size:11px;color:var(--muted);">✅ Diya</div>' +
+        '<div style="font-family:Syne,sans-serif;font-size:20px;font-weight:800;color:#60a5fa;">₹' + totalPaid.toFixed(2) + '</div>' +
+      '</div>' +
+      '<div style="background:' + (baqi>0?'rgba(239,68,68,0.1)':'rgba(34,197,94,0.1)') + ';border:1px solid ' + (baqi>0?'rgba(239,68,68,0.4)':'rgba(34,197,94,0.3)') + ';border-radius:10px;padding:12px;text-align:center;">' +
+        '<div style="font-size:11px;color:var(--muted);">⏳ Baqi</div>' +
+        '<div style="font-family:Syne,sans-serif;font-size:20px;font-weight:800;color:' + (baqi>0?'#f87171':'var(--green)') + ';">₹' + baqi.toFixed(2) + '</div>' +
+      '</div>' +
+    '</div>';
+
+  // Payment history
+  const payHistEl = document.getElementById('sel-payment-history');
+  if (allPayments.length === 0) {
+    payHistEl.innerHTML = '<div style="text-align:center;padding:14px;color:var(--muted);font-size:13px;">Abhi tak koi payment nahi</div>';
+  } else {
+    payHistEl.innerHTML = allPayments.map(p =>
+      '<div style="background:var(--bg);border:1px solid rgba(59,130,246,0.3);border-radius:8px;padding:10px 14px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;">' +
+        '<div><div style="font-weight:700;color:#60a5fa;">₹' + p.amount.toFixed(2) + '</div>' +
+        '<div style="font-size:12px;color:var(--muted);">' + p.date + (p.note ? ' — ' + p.note : '') + '</div></div>' +
+        '<button onclick="deleteSellerPayment(' + p.id + ',' + selId + ')" style="background:none;border:none;color:var(--muted);font-size:16px;cursor:pointer;">✕</button>' +
+      '</div>'
+    ).join('');
+  }
+
+  // Bill history
+  const billHistEl = document.getElementById('sel-bill-history');
+  if (allBills.length === 0) {
+    billHistEl.innerHTML = '<div style="text-align:center;padding:24px;color:var(--muted);font-size:13px;">📭 Abhi tak koi bill nahi.</div>';
+  } else {
+    billHistEl.innerHTML = allBills.map(b => {
+      const rows = b.items.map(item =>
+        '<tr><td><b>' + item.beltCode + '</b></td>' +
+        '<td><span class="badge badge-' + item.company + '">' + item.company + '</span></td>' +
+        '<td><span class="badge badge-' + item.section + '">' + item.section + '</span></td>' +
+        '<td>' + item.inch + '"</td>' +
+        '<td style="font-weight:700;">' + item.qty + '</td>' +
+        '<td style="color:var(--green);font-weight:700;">₹' + (item.amount||0).toFixed(2) + '</td></tr>'
+      ).join('');
+      return '<div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:12px;">' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px;">' +
+          '<div><div style="font-weight:700;color:var(--accent);font-size:14px;">📅 ' + b.date + ' — ' + b.time + '</div>' +
+          '<div style="font-size:12px;color:var(--muted);">Bill: ' + (b.billNo||'—') + ' | ' + b.customer + '</div></div>' +
+          '<div style="font-family:Syne,sans-serif;font-size:18px;font-weight:800;color:var(--green);">₹' + (b.totalAmount||0).toFixed(2) + '</div>' +
+        '</div>' +
+        '<div class="table-wrap"><table>' +
+          '<thead><tr><th>Code</th><th>Company</th><th>Section</th><th>Size</th><th>Qty</th><th>Amount</th></tr></thead>' +
+          '<tbody>' + rows + '</tbody></table></div></div>';
+    }).join('');
+  }
+
+  document.getElementById('sel-modal').classList.remove('hidden');
+}
+
+function goToBillingForSeller() {
+  const selId = document.getElementById('sel-current-id') ? parseInt(document.getElementById('sel-current-id').value) : null;
+  document.getElementById('sel-modal').classList.add('hidden');
+  // Switch to billing tab
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-billing').classList.add('active');
+  document.querySelectorAll('nav button').forEach(b => { if(b.textContent.includes('Billing')) b.classList.add('active'); });
+  renderBillItems();
+  populateSellerDropdown();
+  // Auto select seller in dropdown
+  if (selId) {
+    setTimeout(() => {
+      const sel = document.getElementById('seller-select');
+      if (sel) { sel.value = selId; onSellerSelect(); }
+    }, 100);
+  }
+}
+
+function deleteSellerPayment(payId, selId) {
+  saveSellerPayments(getSellerPayments().filter(p => p.id !== payId));
+  openSeller(selId);
+  renderSellers();
+  toast('Payment hata di', 'var(--low)');
+}
+
+// INIT
+function init() {
+  const now = new Date();
+  document.getElementById('hdate').innerHTML = now.toLocaleDateString('en-IN',{weekday:'short',day:'2-digit',month:'short',year:'numeric'})+'<br/>'+now.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+  renderDashboard();
+  renderBillItems();
+  populateSellerDropdown();
+}
+init();
+
+// PWA Service Worker — only on real hosting (not Claude preview)
+let deferredPrompt;
+if ('serviceWorker' in navigator && !location.hostname.includes('claudeusercontent')) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(()=>{});
+  });
+}
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredPrompt=e; document.getElementById('install-btn').style.display='flex'; });
+window.addEventListener('appinstalled', () => { document.getElementById('install-btn').style.display='none'; deferredPrompt=null; });
+function installApp() {
+  if (!deferredPrompt) { toast('Apne phone mein download kar ke open karo install ke liye!','var(--accent)'); return; }
+  deferredPrompt.prompt();
+  deferredPrompt.userChoice.then(choice => { if(choice.outcome==='accepted') toast('✅ App install ho raha hai!'); deferredPrompt=null; document.getElementById('install-btn').style.display='none'; });
+}
+</script>
+</body>
+</html>
